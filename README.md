@@ -88,17 +88,42 @@ Include etc/extra/httpd-vhosts.conf
 Include etc/extra/httpd-vhosts-le-ssl.conf #Add it here
 ------------
 ```
-## 7. Retart the XAMPP
+
+## 7. Edit the file to allow access on the SSL port.
+```
+ sudo nano /opt/lampp/etc/extra/httpd-vhosts-le-ssl.conf
+
+<VirtualHost *:443>
+    DocumentRoot "/opt/lampp/htdocs/campinasrp"
+    ServerName campinasrp.com
+    ServerAlias www.campinasrp.com
+    <Directory "/opt/lampp/htdocs/campinasrp">
+        # AllowOverride All      # Deprecated
+        # Order Allow,Deny       # Deprecated
+        # Allow from all         # Deprecated
+
+        # --New way of doing it
+        Require all granted
+    </Directory>
+
+
+Include /etc/letsencrypt/options-ssl-apache.conf
+SSLCertificateFile /etc/letsencrypt/live/campinasrp.com/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/campinasrp.com/privkey.pem
+</VirtualHost>
+```
+
+## 8. Retart the XAMPP
 ```
 sudo /opt/lampp/lampp restart
 ```
 
-## 8. Finally, you can the run command and following the steps of certbot to choose what you want to generate
+## 9. Finally, you can the run command and following the steps of certbot to choose what you want to generate
 ```
  sudo certbot --apache-ctl /opt/lampp/bin/apachectl
 ```
 
-## 9. Here is a running log when it works
+## 10. Here is a running log when it works
 ```
 sudo certbot --apache-ctl /opt/lampp/bin/apachectl
 Saving debug log to /var/log/letsencrypt/letsencrypt.log
